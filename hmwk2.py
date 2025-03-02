@@ -10,14 +10,11 @@ class Car:
     def drive(self):
         print("The car is moving!")
 
-# Creating two car objects
 car1 = Car("Toyota", "Red", 100)
 car2 = Car("Ford", "Blue", 120)
 
-# Calling show_info for both cars
 car1.show_info()
 car2.show_info()
 
-# Calling drive method
 car1.drive()
 car2.drive()
