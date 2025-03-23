@@ -1,4 +1,5 @@
 import pygame
+import sys
 pygame.init()
 
 # display
@@ -10,7 +11,7 @@ pygame.display.update()
 
 # circle class
 class Circle:
-    def __init__(self, color, pos, radius, width):
+    def __init__(self, color, pos, radius, width = 0):
         self.screen = screen
         self.color = color
         self.width = width
@@ -30,22 +31,28 @@ pygame.draw.circle(screen, "red", position, radius, width)
 pygame.display.update()
 
 # circle object
-green_circle = Circle("green", position, radius + 60, width)
-yellow_circle = Circle("yellow", position, radius + 40, width)
+green_circle = Circle("green", position, radius + 60)
+yellow_circle = Circle("yellow", position, radius + 40)
 orange_circle = Circle("orange", position, radius, 5)
-purple_circle = Circle("purple", position, 20, width)
+purple_circle = Circle("purple", position, 20)
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             screen.fill("white")
-            blue_circle.draw()
+            green_circle.draw()
+            yellow_circle.draw()
+            orange_circle.draw()
+            purple_circle.draw()
             pygame.display.update()
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP:
+        elif event.type == pygame.MOUSEBUTTONUP:
             screen.fill("white")
-            blue_circle.grow_circle(10)
+            screen.fill("white")
+            green_circle.grow_circle(10)
+            yellow_circle.grow_circle(10)
+            orange_circle.grow_circle(10)
+            purple_circle.grow_circle(10)
             pygame.display.update()
