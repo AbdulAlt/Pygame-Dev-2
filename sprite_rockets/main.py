@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         if pressed_key[pygame.K_LEFT]:
             self.rect.move_ip(-5, 0)
         if pressed_key[pygame.K_RIGHT]:
-            self.rect.move_ip(5, 0)
+            self.rect.move_ip(5, 0)   
 
         if self.rect.left < 0:
             self.rect.left = 0
@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom >= HEIGHT:
             self.rect.bottom = HEIGHT
 
-# Apple class
+# apple
 class Apple(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -45,7 +45,17 @@ class Apple(pygame.sprite.Sprite):
         self.image = self.apple
         self.rect.topleft = (100, 100)
 
-# Banana class
+    def update(self, pressed_key):
+        if pressed_key[pygame.K_w]:
+            self.rect.move_ip(0, -5)
+        if pressed_key[pygame.K_s]:
+            self.rect.move_ip(0, 5)
+        if pressed_key[pygame.K_a]:
+            self.rect.move_ip(-5, 0)
+        if pressed_key[pygame.K_d]:
+            self.rect.move_ip(5, 0)
+
+# banana
 class Banana(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -55,7 +65,7 @@ class Banana(pygame.sprite.Sprite):
         self.image = self.banana
         self.rect.topleft = (200, 150)
 
-# Orange class
+# orange
 class Orange(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -65,7 +75,7 @@ class Orange(pygame.sprite.Sprite):
         self.image = self.orange
         self.rect.topleft = (300, 200)
 
-# Strawberry class
+# strawberry
 class Strawberry(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -75,7 +85,7 @@ class Strawberry(pygame.sprite.Sprite):
         self.image = self.strawberry
         self.rect.topleft = (400, 250)
 
-# Watermelon class
+# watermelon
 class Watermelon(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -88,7 +98,6 @@ class Watermelon(pygame.sprite.Sprite):
 # start game function
 def start_game():
     player = Player()
-
     apple = Apple()
     banana = Banana()
     orange = Orange()
@@ -103,10 +112,9 @@ def start_game():
 
         pressed_key = pygame.key.get_pressed()
         player.update(pressed_key)
+        apple.update(pressed_key)
 
         screen.blit(pygame.image.load("images/bg.png"), (0, 0))
-
-        # draw fruits
         screen.blit(player.image, player.rect)
         screen.blit(apple.image, apple.rect)
         screen.blit(banana.image, banana.rect)
