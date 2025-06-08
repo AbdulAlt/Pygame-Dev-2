@@ -1,6 +1,6 @@
 import pygame
 import os
-pygame.font.init
+pygame.font.init()
 pygame.mixer.init()
 
 pygame.init()
@@ -37,11 +37,11 @@ def draw_window(red, yellow, red_bullet, yellow_bullet, red_health, yellow_healt
     screen.blit(bg, (0, 0))
     pygame.draw.rect(screen, "black", BORDER)
 
-    red_health_text = health_font.render("health: " + str(red_health), True, (0, 0, 0))
-    yellow_health_text = health_font.render("health: " + str(yellow_health), True, (0, 0, 0))
+    red_health_text = health_font.render("health: " + str(red_health), True, "white")
+    yellow_health_text = health_font.render("health: " + str(yellow_health), True, "white")
 
     screen.blit(red_health_text, (WIDTH - red_health_text.get_width() - 10, 10))
-    screen.blit(yellow_health_text, (WIDTH - yellow_health_text.get_width() - 10, 10))
+    screen.blit(yellow_health_text, (10, 10))
     screen.blit(red_image_sp, (red.x, red.y))
     screen.blit(yellow_image_sp, (yellow.x, yellow.y))
     
@@ -65,20 +65,20 @@ def yellow_handle_movement(keys_pressed, yellow):
 
 # red movement
 def red_handle_movement(keys_pressed, red):
-    if keys_pressed[pygame.K_LEFT] and red.x - VEL > 0: # left
+    if keys_pressed[pygame.K_LEFT] and red.x - VEL > BORDER.x + BORDER.width: # left
         red.x -= VEL
-    if keys_pressed[pygame.K_RIGHT] and red.x + VEL + red.width < BORDER.x:
+    if keys_pressed[pygame.K_RIGHT] and red.x + VEL + red.width < WIDTH: # right
         red.x += VEL
     if keys_pressed[pygame.K_UP] and red.y - VEL > 0:
         red.y -= VEL
-    if keys_pressed[pygame.K_DOWN] and red.y + VEL < HEIGHT - 15:
+    if keys_pressed[pygame.K_DOWN] and red.y + VEL + red.height < HEIGHT - 15:
         red.y += VEL
 
 # bullet stuff
 def handle_bullet(red_bullet, yellow_bullet, red, yellow):
     for i in yellow_bullet:
         i.x += BULLET_VEL
-        if red.collide_rect(i):
+        if red.colliderect(i):
             pygame.event.post(pygame.event.Event(RED_HIT))
             yellow_bullet.remove(i)
         elif i.x > WIDTH:
@@ -86,7 +86,7 @@ def handle_bullet(red_bullet, yellow_bullet, red, yellow):
 
     for i in red_bullet:
         i.x -= BULLET_VEL
-        if yellow.collide_rect(i):
+        if yellow.colliderect(i):
             pygame.event.post(pygame.event.Event (YELLOW_HIT))
             red_bullet.remove(i)
         elif i.x < 0:
@@ -110,7 +110,7 @@ def main():
     red_health = 10
     yellow_health = 10
     
-    clock = pygame.display.clock()
+    clock = pygame.time.Clock()
 
     while True:
         clock.tick(FPS)
@@ -119,10 +119,35 @@ def main():
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL and len(yellow_bullet) < MAX_BULLETS:
-                    bullet = pygame.Rect(yellow.x + yellow.width, yellow.y + yellow.height // 2 - 2, 10 - 5)
+                    bullet = pygame.Rect(yellow.x + yellow.width, yellow.y + yellow.height // 2 - 2, 10, 5)
                     yellow_bullet.append(bullet)
                 if event.key == pygame.K_RCTRL and len(red_bullet) < MAX_BULLETS:
                     bullet = pygame.Rect(red.x, red.y + red.height // 2 - 2, 10, 5)
-                    red_bullet.append(bullet)               
-                
-        pygame.display.update
+                    red_bullet.append(bullet)  
+
+            if event.type == RED_HIT:
+                red_health -= 1
+            if event.type == YELLOW_HIT:
+                yellow_health -= 1
+        
+        winner_text = ""
+        if red_health <= 0:
+            winner_text = "Yellow wins"
+        if yellow_health <= 0:
+            winner_text = "Red wins"
+        
+        if winner_text != "":
+            draw_winner(winner_text)
+            break
+
+        keys_pressed = pygame.key.get_pressed()
+        red_handle_movement(keys_pressed, red)
+        yellow_handle_movement(keys_pressed, yellow)
+
+        handle_bullet(red_bullet, yellow_bullet, red, yellow)
+        draw_window(red, yellow, red_bullet, yellow_bullet, red_health, yellow_health)
+        pygame.display.update()
+
+main()
+if __name__ == "__main__":
+    main()
