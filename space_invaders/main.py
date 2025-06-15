@@ -24,6 +24,8 @@ SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 YELLOW_HIT = pygame.USEREVENT+1
 RED_HIT = pygame.USEREVENT+2
 BORDER = pygame.Rect(WIDTH / 2 - 5, 0, 10, HEIGHT)
+BULLET_FIRE_SOUND = pygame.mixer.Sound('sounds/gun.mp3')
+BULLET_HIT_SOUND = pygame.mixer.Sound("sounds/grenade.mp3")
 
 # images
 red_image = pygame.image.load(os.path.join("images", "red_rocket.png"))
@@ -121,14 +123,18 @@ def main():
                 if event.key == pygame.K_LCTRL and len(yellow_bullet) < MAX_BULLETS:
                     bullet = pygame.Rect(yellow.x + yellow.width, yellow.y + yellow.height // 2 - 2, 10, 5)
                     yellow_bullet.append(bullet)
+                    BULLET_FIRE_SOUND.play()
                 if event.key == pygame.K_RCTRL and len(red_bullet) < MAX_BULLETS:
                     bullet = pygame.Rect(red.x, red.y + red.height // 2 - 2, 10, 5)
                     red_bullet.append(bullet)  
+                    BULLET_FIRE_SOUND.play()
 
             if event.type == RED_HIT:
                 red_health -= 1
+                BULLET_HIT_SOUND.play()
             if event.type == YELLOW_HIT:
                 yellow_health -= 1
+                BULLET_HIT_SOUND.play()
         
         winner_text = ""
         if red_health <= 0:
