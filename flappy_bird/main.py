@@ -10,6 +10,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 fps = 60
+pipe_frequency = 1500
+last_pipe = pygame.time.get_ticks()
 
 # variables
 bg = pygame.image.load("images/bg.png")
@@ -77,6 +79,11 @@ class Pipe(pygame.sprite.Sprite):
             self.rect.bottomleft = [x, y]
         if pos == -1:
             self.rect.bottomleft = [x, y]
+        
+        def update():
+            self.rect.x -= scroll_speed
+            if self.rect.right < 0:
+                self.kill()
 
 
 
@@ -104,10 +111,13 @@ while True:
         flappy.index = 0
 
     if game_over == False and flying == True:
-        btm_pipe = Pipe(WIDTH, int(HEIGHT / 2), -1)
-        top_pipe = Pipe(WIDTH, int(HEIGHT / 2), 1)
-        pipe_group.add(btm_pipe)
-        pipe_group.add(top_pipe)
+        current_time = pygame.time.get_ticks()
+        if current_time - last_pipe > pipe_frequency:
+            btm_pipe = Pipe(WIDTH, int(HEIGHT / 2), -1)
+            top_pipe = Pipe(WIDTH, int(HEIGHT / 2), 1)
+            pipe_group.add(btm_pipe)
+            pipe_group.add(top_pipe)
+            last_pipe = current_time
 
         ground_scroll -= scroll_speed
         if abs(ground_scroll) > 35:
